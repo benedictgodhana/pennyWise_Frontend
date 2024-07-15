@@ -44,7 +44,6 @@
     </div>
   </v-app>
 </template>
-
 <script>
 import axiosInstance from '../service/api';
 
@@ -78,11 +77,18 @@ export default {
           email: this.email,
           password: this.password
         });
-        // Assuming the API returns a token upon successful login
-        localStorage.setItem('token', response.data.token);
+
+        // Assuming the API returns user details including token, role, and other details
+        const { token, user } = response.data;
+
+        // Store token, role, and user details in local storage
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+
         this.snackbarColor = 'success';
         this.snackbarMessage = 'Login successful!';
         this.snackbar = true;
+
         // Redirect to welcome page after successful login
         this.$router.push('/welcomePage');
       } catch (error) {
@@ -90,7 +96,7 @@ export default {
         if (error.response && error.response.status === 401) {
           this.snackbarMessage = 'Invalid email or password. Please try again.';
         } else {
-          this.snackbarMessage = 'Please fill all the require.';
+          this.snackbarMessage = 'An error occurred. Please try again.';
         }
         this.snackbar = true;
       }

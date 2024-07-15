@@ -10,9 +10,12 @@
           <v-row>
             <v-col v-for="article in articles" :key="article.id" cols="12" sm="6" md="4">
               <v-card class="my-4" elevation="2">
-                <v-card-title>{{ article.title }}</v-card-title>
-                <v-card-subtitle>{{ article.author }}</v-card-subtitle>
+                <v-card-title style="background-color:orange;font-weight: 400;font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">{{ article.title }}</v-card-title>
+                <br>
                 <v-card-text>{{ article.content }}</v-card-text>
+                <v-card-actions>
+                  <v-btn @click="navigateToArticle(article.link)" style="text-transform: capitalize;background-color: orange;" width="100%">Read More</v-btn>
+                </v-card-actions>
               </v-card>
             </v-col>
           </v-row>
@@ -43,15 +46,18 @@
 </template>
 
 <script>
-import axiosInstance from '@/service/api';
-
 export default {
   data() {
     return {
-      articles: [],
+      articles: [
+        { id: 1, title: 'Understanding Budgeting', author: 'John Doe', content: 'Learn the basics of budgeting...', link: '/articles/budgeting' },
+        { id: 2, title: 'Saving for the Future', author: 'Jane Smith', content: 'Discover tips for saving money...', link: '/articles/saving' },
+        { id: 3, title: 'Investment Strategies', author: 'Mike Johnson', content: 'Explore various investment strategies...', link: '/articles/investing' },
+        // Add more articles as needed
+      ],
       snackbar: false,
       snackbarMessage: '',
-      snackbarColor: 'error',
+      snackbarColor: 'info', // Default to info since we no longer have a fetch error
       active: null,
       items: [
         { title: 'Home', icon: 'mdi-home', route: '/welcomePage' },
@@ -62,27 +68,12 @@ export default {
       ],
     };
   },
-  created() {
-    this.fetchArticles();
-  },
   methods: {
-    async fetchArticles() {
-      try {
-        const response = await axiosInstance.get('/financial_literacy_resources');
-        this.articles = response.data;
-        if (this.articles.length === 0) {
-          this.snackbarColor = 'info';
-          this.snackbarMessage = 'No articles found.';
-          this.snackbar = true;
-        }
-      } catch (error) {
-        this.snackbarColor = 'error';
-        this.snackbarMessage = 'Failed to fetch articles. Please try again later.';
-        this.snackbar = true;
-      }
-    },
     navigate(route) {
       this.$router.push(route);
+    },
+    navigateToArticle(link) {
+      this.$router.push(link);
     },
   },
 };
@@ -95,7 +86,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity (last value) to make it darker/lighter */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .calculator-title {

@@ -16,6 +16,8 @@
     "apexcharts": "^3.50.0",
     "axios": "^1.7.2",
     "flag-icons": "^7.2.3",
+    "highcharts": "^11.4.6",
+    "highcharts-vue": "^2.0.1",
     "v-phone-input": "^4.2.2",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",

@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import AxiosInstance from '@/service/api'
 export default {
  
   data() {
@@ -146,13 +147,13 @@ export default {
     toggleShowConfirmPassword() {
       this.showConfirmPassword = !this.showConfirmPassword;
     },
-    registerTrader() {
-      // Perform registration logic here, e.g., submit data to backend API
+    async registerTrader() {
       const formData = {
         firstName: this.firstName,
         lastName: this.lastName,
         email: this.email,
         password: this.password,
+        password_confirmation: this.confirm_password,
         businessName: this.businessName,
         businessType: this.businessType,
         industrySector: this.industrySector,
@@ -167,18 +168,17 @@ export default {
         trainingNeeds: this.trainingNeeds,
         consentMarketing: this.consentMarketing
       };
-      console.log('Form Data:', formData);
 
-      // Example: Submit form data to backend API
-      // Replace this with your actual API call
-      // axios.post('/api/register', formData)
-      //   .then(response => {
-      //     // Handle success
-      //   })
-      //   .catch(error => {
-      //     // Handle error
-      //   });
+      try {
+        const response = await AxiosInstance.post('/registerTrader', formData);
+        console.log('Registration successful:', response.data);
+        // Handle successful registration, e.g., navigate to a different page
+      } catch (error) {
+        console.error('Registration failed:', error.response.data);
+        // Handle registration errors, e.g., display validation errors
+      }
     }
+
   }
 };
 </script>

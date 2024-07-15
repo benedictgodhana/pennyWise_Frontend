@@ -9,6 +9,7 @@ import { createVuetify } from 'vuetify'
 import '@mdi/font/css/materialdesignicons.min.css'
 import VueTelInput from 'vue3-tel-input'
 import 'vue3-tel-input/dist/vue3-tel-input.css'
+import HighchartsVue from 'highcharts-vue';
 
 
 
@@ -22,4 +23,5 @@ const app = createApp(App)
 app.use(router)
 app.use(vuetify)
 app.use(VueTelInput);
+app.use(HighchartsVue)
 app.mount('#app')

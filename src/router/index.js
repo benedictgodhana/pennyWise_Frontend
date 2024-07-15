@@ -8,7 +8,10 @@ import ArticlePage from '@/views/Trader/ArticleView.vue'
 import BasicCalculatorPage from '@/views/Trader/BasicCalculator.vue'
 import EmergencyFundCalculator from '@/views/Trader/EmergencyCalculator.vue';
 import BusinessInvestmentCalculator from '@/views/Trader/BusinessInvestmentCalculator.vue';
-
+import Profile from '@/views/Trader/Profile.vue';
+import BudgetingArticle from '@/components/BudgetingArticle.vue';
+import SavingArticle from '@/components/SavingArticle.vue';
+import InvestingArticle from '@/components/InvestingArticle.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,10 +23,34 @@ const router = createRouter({
       component:RegisterView
     },
 
+    { path: '/articles/budgeting',
+     component: BudgetingArticle,
+     meta: { requiresAuth: true },
+
+   },
+    { path: '/articles/saving', 
+    component: SavingArticle,
+    meta: { requiresAuth: true },
+
+  },
+    { path: '/articles/investing',
+     component: InvestingArticle,
+     meta: { requiresAuth: true },
+ 
+    },
+
     {
       path: '/emergencyFundCalculator',
       name: 'EmergencyFundCalculator',
       component: EmergencyFundCalculator,
+      meta: { requiresAuth: true },
+
+    },
+
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
       meta: { requiresAuth: true },
 
     },
