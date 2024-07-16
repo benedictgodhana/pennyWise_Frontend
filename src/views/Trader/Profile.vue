@@ -44,7 +44,7 @@
           <v-card-title class="headline text-center" style="background-color: orange;">Update Password</v-card-title>
           <v-card-text>
             <v-form ref="passwordForm" v-model="valid">
-              <v-text-field v-model="currentPassword" :type="'password'" label="Current Password" variant="outlined"></v-text-field>
+              <v-text-field v-model="oldPassword" :type="'password'" label="Old Password" variant="outlined"></v-text-field>
               <v-text-field v-model="newPassword" :type="'password'" label="New Password" variant="outlined"></v-text-field>
               <v-text-field v-model="newPasswordConfirmation" :type="'password'" label="Confirm New Password" variant="outlined"></v-text-field>
             </v-form>
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       user: {},
-      currentPassword: '',
+      oldPassword: '',
       newPassword: '',
       newPasswordConfirmation: '',
       valid: false,
@@ -117,30 +117,40 @@ export default {
     this.$router.push('/login');
   }
 },
+async updatePassword() {
+  // Check if new password and confirmation match
+  if (this.newPassword !== this.newPasswordConfirmation) {
+    alert('New password and confirmation do not match.');
+    return;
+  }
 
+  const formData = {
+    old_password: this.oldPassword,
+    new_password: this.newPassword,
+    new_password_confirmation: this.newPasswordConfirmation,
+  };
 
-    async updatePassword() {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await axiosInstance.post('/user/update-password', {
-          current_password: this.currentPassword,
-          new_password: this.newPassword,
-          new_password_confirmation: this.newPasswordConfirmation,
-        }, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        alert(response.data.message);
-        this.currentPassword = '';
-        this.newPassword = '';
-        this.newPasswordConfirmation = '';
-        this.showPasswordDialog = false;
-      } catch (error) {
-        console.error('Error updating password:', error);
-        alert('Error updating password');
-      }
-    },
+  try {
+    const token = localStorage.getItem('token'); // Get the token from local storage
+
+    const response = await axiosInstance.post('/user/update-password', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Pass the token in the headers
+      },
+    });
+    
+    console.log('Password updated successfully:', response.data);
+    // Clear the fields after success
+    this.oldPassword = '';
+    this.newPassword = '';
+    this.newPasswordConfirmation = '';
+    this.showPasswordDialog = false; // Close the dialog after success
+  } catch (error) {
+    console.error('Password update failed:', error.response.data);
+    // Handle update errors, e.g., display validation errors
+    alert('Password update failed: ' + error.response.data.errors.new_password.join(', '));
+  }
+},
 
     async deleteAccount() {
       const token = localStorage.getItem('token');
