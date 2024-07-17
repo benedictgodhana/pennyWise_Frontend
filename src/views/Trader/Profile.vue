@@ -85,73 +85,72 @@ export default {
   },
   methods: {
     async fetchUser() {
-  const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');
   
-  // If there's a token, fetch the user data from the backend
-  if (token) {
-    try {
-      console.log('Token:', token); // Check token
-      const response = await axiosInstance.get('/user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      this.user = response.data;
+      // If there's a token, fetch the user data from the backend
+      if (token) {
+        try {
+          console.log('Token:', token); // Check token
+          const response = await axiosInstance.get('/user', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          this.user = response.data;
 
-      // Store user data in local storage
-      localStorage.setItem('user', JSON.stringify(response.data));
-    } catch (error) {
-      console.error('Error fetching user:', error.response ? error.response.data : error);
-      alert('Failed to fetch user details. Please try again.');
-      
-      // Optional: handle specific errors (e.g., unauthorized)
-      if (error.response && error.response.status === 401) {
-        alert('Your session has expired. Please log in again.');
-        // Redirect to login page if necessary
+          // Store user data in local storage
+          localStorage.setItem('user', JSON.stringify(response.data));
+        } catch (error) {
+          console.error('Error fetching user:', error.response ? error.response.data : error);
+          alert('Failed to fetch user details. Please try again.');
+          
+          // Optional: handle specific errors (e.g., unauthorized)
+          if (error.response && error.response.status === 401) {
+            alert('Your session has expired. Please log in again.');
+            // Redirect to login page if necessary
+            this.$router.push('/login');
+          }
+        }
+      } else {
+        alert('No active session found. Please log in.');
+        // Redirect to login page if no token is found
         this.$router.push('/login');
       }
-    }
-  } else {
-    alert('No active session found. Please log in.');
-    // Redirect to login page if no token is found
-    this.$router.push('/login');
-  }
-},
-async updatePassword() {
-  // Check if new password and confirmation match
-  if (this.newPassword !== this.newPasswordConfirmation) {
-    alert('New password and confirmation do not match.');
-    return;
-  }
+    },
+    async updatePassword() {
+      // Check if new password and confirmation match
+      if (this.newPassword !== this.newPasswordConfirmation) {
+        alert('New password and confirmation do not match.');
+        return;
+      }
 
-  const formData = {
-    old_password: this.oldPassword,
-    new_password: this.newPassword,
-    new_password_confirmation: this.newPasswordConfirmation,
-  };
+      const formData = {
+        old_password: this.oldPassword,
+        new_password: this.newPassword,
+        new_password_confirmation: this.newPasswordConfirmation,
+      };
 
-  try {
-    const token = localStorage.getItem('token'); // Get the token from local storage
+      try {
+        const token = localStorage.getItem('token'); // Get the token from local storage
 
-    const response = await axiosInstance.post('/user/update-password', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Pass the token in the headers
-      },
-    });
-    
-    console.log('Password updated successfully:', response.data);
-    // Clear the fields after success
-    this.oldPassword = '';
-    this.newPassword = '';
-    this.newPasswordConfirmation = '';
-    this.showPasswordDialog = false; // Close the dialog after success
-  } catch (error) {
-    console.error('Password update failed:', error.response.data);
-    // Handle update errors, e.g., display validation errors
-    alert('Password update failed: ' + error.response.data.errors.new_password.join(', '));
-  }
-},
-
+        const response = await axiosInstance.post('/user/update-password', formData, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass the token in the headers
+          },
+        });
+        
+        console.log('Password updated successfully:', response.data);
+        // Clear the fields after success
+        this.oldPassword = '';
+        this.newPassword = '';
+        this.newPasswordConfirmation = '';
+        this.showPasswordDialog = false; // Close the dialog after success
+      } catch (error) {
+        console.error('Password update failed:', error.response.data);
+        // Handle update errors, e.g., display validation errors
+        alert('Password update failed: ' + error.response.data.errors.new_password.join(', '));
+      }
+    },
     async deleteAccount() {
       const token = localStorage.getItem('token');
       if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
@@ -170,37 +169,41 @@ async updatePassword() {
       }
     },
     async logout() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('No active session found.');
-    return;
-  }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('No active session found.');
+        return;
+      }
 
-  try {
-    const response = await axiosInstance.post('/logout', {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    alert(response.data.message);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
-    // Redirect to home page
-    this.$router.push('/welcomePage'); // Change '/welcomePage' to your home route
-  } catch (error) {
-    console.error('Error logging out:', error);
-    if (error.response && error.response.status === 401) {
-      alert('Your session has expired. Please log in again.');
-      this.$router.push('/login'); // Redirect to login page
-    } else {
-      alert('Error logging out');
-    }
-  }
-}
-
-
-  }
+      try {
+        const response = await axiosInstance.post('/logout', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        alert(response.data.message);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        // Redirect to home page
+        this.$router.push('/welcomePage'); // Change '/welcomePage' to your home route
+      } catch (error) {
+        console.error('Error logging out:', error);
+        if (error.response && error.response.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          this.$router.push('/login'); // Redirect to login page
+        } else {
+          alert('Error logging out');
+        }
+      }
+    },
+    contactSupport() {
+      const supportEmail = 'support@pennyWise.com'; // Replace with your support email
+      const subject = encodeURIComponent('Support Request');
+      const body = encodeURIComponent('Please describe your issue here...');
+      window.location.href = `mailto:${supportEmail}?subject=${subject}&body=${body}`;
+    },
+  },
 };
 </script>
 
