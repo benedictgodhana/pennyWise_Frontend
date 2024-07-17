@@ -12,6 +12,8 @@ import Profile from '@/views/Trader/Profile.vue';
 import BudgetingArticle from '@/components/BudgetingArticle.vue';
 import SavingArticle from '@/components/SavingArticle.vue';
 import InvestingArticle from '@/components/InvestingArticle.vue';
+import BudgetTracker from '@/views/Trader/BudgetTracker.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +45,13 @@ const router = createRouter({
       path: '/emergencyFundCalculator',
       name: 'EmergencyFundCalculator',
       component: EmergencyFundCalculator,
+      meta: { requiresAuth: true },
+
+    },
+    {
+      path: '/savings',
+      name: 'BudgetTracker',
+      component: BudgetTracker,
       meta: { requiresAuth: true },
 
     },
